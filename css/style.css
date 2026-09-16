@@ -1,0 +1,25 @@
+body {
+    display: grid;
+    grid-template-rows: 1fr 8fr;
+    grid-template-columns: 1fr 1fr;
+    font-family: sans-serif;
+    margin: 0;
+    background: #f4f6f8;
+    color: #2b2b2b;
+}
+
+header {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    background: lightseagreen;
+}
+
+.input-part, .canvas-part, .table-part {
+    padding: 15px;
+    display: block;
+}
+
+.table-part {
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
