@@ -12,14 +12,44 @@ header {
     grid-column-start: 1;
     grid-column-end: 3;
     background: lightseagreen;
+    max-height: 5rem;
+    padding-left: 0.5rem;
+    align-content: center;
 }
 
 .input-part, .canvas-part, .table-part {
-    padding: 15px;
+    padding: 0.5rem;
+    display: block;
+}
+.input-part, .table-part {
     display: block;
 }
 
 .table-part {
     grid-column-start: 1;
     grid-column-end: 3;
+}
+
+#form {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px 16px;
+}
+
+.field {
+    display: contents;
+}
+
+.radios {
+    display: block;
+}
+.canvas-part {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+}
+
+canvas {
+    border-style: solid;
+    border-width: thick;
+    border-color: #2b2b2b;
 }

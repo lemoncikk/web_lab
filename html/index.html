@@ -8,12 +8,13 @@
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-    <header>
-        <p>Ведмедюк Антон Вариант 12687</p>
-    </header>
-    <div class="input-part">
-        <form action="" id="form">
-            <label for="x">Введите координату X:</label>
+<header>
+    <p>Ведмедюк Антон Вариант 12687</p>
+</header>
+<div class="input-part">
+    <form action="" id="form">
+        <div class="field">
+            <label for="x">Выберите координату X:</label>
             <select name="x-cord" id="x">
                 <option value="-5">-5</option>
                 <option value="-4">-4</option>
@@ -25,12 +26,16 @@
                 <option value="2">2</option>
                 <option value="3">3</option>
             </select>
+        </div>
+        <div class="field">
             <label for="y">Введите координату Y:</label>
             <input id="y" type="text" placeholder="-2.0">
-            <div class="r-group">
-                <label>Введите параметр R</label>
+        </div>
+        <div class="field r-group">
+            <label>Выберите параметр R: </label>
+            <div class="radios">
                 <label>
-                    <input type="radio" name="r-group" value="1">
+                    <input type="radio" name="r-group" value="1" checked>
                     <span>1</span>
                 </label>
                 <label>
@@ -50,11 +55,23 @@
                     <span>3</span>
                 </label>
             </div>
-        </form>
+        </div>
+        <div class="field">
+            <button id="reset-form-btn" type="reset">Сбросить форму</button>
+            <button id="submit-form-btn" type="submit">Отобразить данные</button>
+        </div>
+    </form>
+    <div class="table-part">
+        <table class="tb"></table>
     </div>
-    <div class="canvas-part">
-        <canvas width="500" height="500"></canvas>
+</div>
+<div class="canvas-part">
+    <canvas width="500" height="500" id="plane"></canvas>
+    <div class="buttons">
+        <button>Сбросить график</button>
+        <button>Сбросить все точки</button>
     </div>
-    <div class="table-part"></div>
+</div>
+
 </body>
 </html>

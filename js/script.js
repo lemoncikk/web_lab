@@ -1,15 +1,13 @@
-/*
 const canvas = document.getElementById("canvas");
-const form = document.getElementById("coordForm");
-const reset = document.getElementById("resetBtn");
-const fx = document.getElementById("fx");
-const fy = document.getElementById("fy");
+const form = document.getElementById("form");
+const fx = document.getElementById("x");
+const fy = document.getElementById("y");
 const padding = 20;
 let currentR = 2;
 const btns = document.querySelectorAll("input[name='r']");
 const ctx = canvas.getContext("2d");
 
-arr = JSON.parse(localStorage.getItem("dots") || "[]")
+let arr = JSON.parse(localStorage.getItem("dots") || "[]")
 btns.forEach(btn => {
     btn.addEventListener('change', () => {
         const r = parseFloat(btn.value);
@@ -19,11 +17,6 @@ btns.forEach(btn => {
     })
 })
 
-form.addEventListener("reset", (e) => {
-    localStorage.clear();
-    arr.length = 0
-    drawPlane(currentR);
-})
 
 form.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -114,4 +107,4 @@ function hit(x, y, r) {
         || (x*x + y*y <= r*r && x > 0 && y < 0);
 }
 
-drawPlane(currentR);*/
+drawPlane(currentR);
