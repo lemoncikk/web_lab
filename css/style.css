@@ -30,7 +30,7 @@ header {
     grid-column-end: 3;
 }
 
-#form {
+form {
     display: grid;
     grid-template-columns: auto 1fr;
     gap: 10px 16px;
@@ -38,11 +38,13 @@ header {
 
 .field {
     display: contents;
+
+    .radios {
+        display: block;
+    }
 }
 
-.radios {
-    display: block;
-}
+
 .canvas-part {
     display: grid;
     grid-template-columns: 1fr 2fr;
