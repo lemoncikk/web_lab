@@ -1,39 +1,48 @@
 body {
     display: grid;
-    grid-template-rows: 1fr 8fr;
+    grid-template-rows: auto auto 1fr;
     grid-template-columns: 1fr 1fr;
     font-family: sans-serif;
     margin: 0;
     background: #f4f6f8;
     color: #2b2b2b;
+    min-height: 100vh;
 }
 
 header {
-    grid-column-start: 1;
-    grid-column-end: 3;
+    grid-column: 1 / -1;
+    grid-row: 1;
     background: lightseagreen;
     max-height: 5rem;
     padding-left: 0.5rem;
     align-content: center;
 }
 
-.input-part, .canvas-part, .table-part {
+.input-part,
+.canvas-part,
+.table-part {
     padding: 0.5rem;
     display: block;
 }
-.input-part, .table-part {
-    display: block;
+
+.input-part {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: end;
+    padding: 0.5rem;
 }
 
 .table-part {
-    grid-column-start: 1;
-    grid-column-end: 3;
+    grid-column: 1;
+    grid-row: 3;
+    align-self: start;
+    padding: 0.5rem;
 }
 
 form {
     display: grid;
     grid-template-columns: auto 1fr;
-    gap: 10px 16px;
+    gap: 1rem 1.5rem;
 }
 
 .field {
@@ -48,10 +57,32 @@ form {
 .canvas-part {
     display: grid;
     grid-template-columns: 1fr 2fr;
+    grid-column: 2;
+    grid-row: 2 / 4;
+    gap: 0.5rem;
+}
+.canvas-part button {
+    width: 5rem;
+    height: 3rem;
+    margin: 0.5rem;
 }
 
 canvas {
     border-style: solid;
     border-width: thick;
     border-color: #2b2b2b;
+}
+
+table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+}
+thead th {
+    width: 20%;
+}
+td,
+th {
+    border-style: solid;
+    padding: 10px;
 }

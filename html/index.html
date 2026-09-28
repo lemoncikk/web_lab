@@ -61,15 +61,33 @@
             <button id="submit-form-btn" type="submit">Отобразить данные</button>
         </div>
     </form>
-    <div class="table-part">
-        <table class="tb"></table>
-    </div>
+</div>
+<div class="table-part">
+    <table class="tb">
+        <caption>
+            Result table
+        </caption>
+        <thead>
+            <tr>
+                <th>X</th>
+                <th>Y</th>
+                <th>R</th>
+                <th>Time</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="t-body">
+
+        </tbody>
+        <tfoot>
+
+        </tfoot>
+    </table>
 </div>
 <div class="canvas-part">
     <canvas width="500" height="500" id="plane"></canvas>
     <div class="buttons">
-        <button>Сбросить график</button>
-        <button>Сбросить все точки</button>
+        <button id="reset-plane-btn">Сбросить график</button>
     </div>
 </div>
 
