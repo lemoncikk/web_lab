@@ -15,23 +15,23 @@
     <form action="" id="form">
         <div class="field">
             <label for="x">Выберите координату X:</label>
-            <select name="x-cord" id="x">
-                <option value="-5">-5</option>
-                <option value="-4">-4</option>
-                <option value="-3">-3</option>
-                <option value="-2">-2</option>
-                <option value="-1">-1</option>
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-            </select>
+                <select name="x-cord" id="x" required>
+                    <option value="-5">-5</option>
+                    <option value="-4">-4</option>
+                    <option value="-3">-3</option>
+                    <option value="-2">-2</option>
+                    <option value="-1">-1</option>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
         </div>
         <div class="field">
             <label for="y">Введите координату Y:</label>
-            <input id="y" type="text" placeholder="-2.0">
+            <input id="y" type="text" placeholder="-2.0" required pattern="-?\d+(\.\d+)?" title="Введите число. Если число дробное, введите его через точку">
         </div>
-        <div class="field r-group">
+        <div class="field r-group" id="r-group">
             <label>Выберите параметр R: </label>
             <div class="radios">
                 <label>
@@ -72,8 +72,8 @@
                 <th>X</th>
                 <th>Y</th>
                 <th>R</th>
-                <th>Time</th>
-                <th>Status</th>
+                <th>Время</th>
+                <th>Статус</th>
             </tr>
         </thead>
         <tbody id="t-body">
@@ -87,7 +87,7 @@
 <div class="canvas-part">
     <canvas width="500" height="500" id="plane"></canvas>
     <div class="buttons">
-        <button id="reset-plane-btn">Сбросить график</button>
+        <button id="reset-btn">Сбросить всё</button>
     </div>
 </div>
 

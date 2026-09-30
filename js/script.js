@@ -2,16 +2,18 @@ import {Plane} from "./canvas.js";
 import {Store} from "./store.js";
 import {Dot, isHit} from "./dot.js";
 import {Table} from "./table.js";
-import {validateX, validateY} from "./validation.js";
+import {validateY} from "./validation.js";
 
 const canvas = document.getElementById("plane");
-const resetPlaneBtn = document.getElementById("reset-plane-btn");
+const resetBtn = document.getElementById("reset-btn");
 const form = document.getElementById("form");
 const offscreenCanvas = document.createElement("canvas");
 const xCord = document.getElementById("x");
 const yCord = document.getElementById("y");
-const rCord = document.querySelector("[name='r-group']:checked")
+let   rCord = document.querySelector("[name='r-group']:checked")
 const tBody = document.getElementById("t-body");
+const store = new Store("dots", 3);
+const table = new Table(tBody);
 
 const options = {
     padding: 20,
@@ -20,6 +22,8 @@ const options = {
     labelFont: "14px Arial",
     tickLengthX: 12,
     tickLengthY: 12,
+    maxDots: 10,
+    dotRadius: 5,
     colors: {
         clearColor: "#ffffff",
         coordsLine: "#222222",
@@ -28,25 +32,24 @@ const options = {
 };
 const plane = new Plane(canvas, offscreenCanvas, options)
 window.addEventListener("resize", () => plane.resize());
-plane.fullRender(3);
+plane.fullRender(store.getR());
+resetBtn.addEventListener("click", () => store.clear());
 
 form.addEventListener("submit", (ev) => {
     ev.preventDefault();
-    const tr = document.createElement("tr");
+    rCord = document.querySelector("[name='r-group']:checked")
+    validateY(yCord);
+    if (!yCord.checkValidity()) {
+        yCord.reportValidity();
+        return;
+    }
 
-    tr.innerHTML = `
-        <td>${xCord.value}</td>
-        <td>${yCord.value}</td>
-        <td>${rCord.value}</td>
-        <td>${Date.now()}</td>
-        <td>Sosi</td>
-    `
-    tBody.appendChild(tr);
-})
-
-
-const store = new Store("dots", 3)
-store.subscribe((s) => {
-    plane.setDots(s.dots);
-    plane.render(s.r);
+    store.addDot(new Dot(Number(xCord.value), Number(yCord.value), Number(rCord.value), Date.now()));
 });
+yCord.addEventListener("input", () => {
+    yCord.setCustomValidity("");
+    validateY(yCord);
+});
+
+plane.bind(store);
+table.bind(store);

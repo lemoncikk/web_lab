@@ -6,7 +6,7 @@ body {
     margin: 0;
     background: #f4f6f8;
     color: #2b2b2b;
-    min-height: 100vh;
+    min-height: 100%;
 }
 
 header {
@@ -29,14 +29,16 @@ header {
     grid-column: 1;
     grid-row: 2;
     align-self: end;
-    padding: 0.5rem;
+    padding: 0.5em;
 }
 
 .table-part {
     grid-column: 1;
     grid-row: 3;
     align-self: start;
-    padding: 0.5rem;
+    padding: 0.5em;
+    max-height: 20rem;
+    overflow: scroll;
 }
 
 form {
@@ -47,10 +49,10 @@ form {
 
 .field {
     display: contents;
+}
 
-    .radios {
-        display: block;
-    }
+.field .radios {
+    display: block;
 }
 
 
@@ -62,9 +64,11 @@ form {
     gap: 0.5rem;
 }
 .canvas-part button {
-    width: 5rem;
-    height: 3rem;
-    margin: 0.5rem;
+    min-width: 5rem;
+    min-height: 3rem;
+    padding: 0.5em 1em;
+    width: auto;
+    height: auto;
 }
 
 canvas {
@@ -85,4 +89,9 @@ td,
 th {
     border-style: solid;
     padding: 10px;
+}
+
+button:hover {
+    background: lightseagreen;
+    border-style: none;
 }

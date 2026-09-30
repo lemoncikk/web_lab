@@ -1,7 +1,8 @@
+import {isHit} from "./dot.js";
+
 export {Plane};
 
 class Plane {
-    //TODO: add default values into const-block
     #canvas
     #ctx
     #offscreenCanvas
@@ -22,6 +23,9 @@ class Plane {
     #tickLengthX
     #tickLengthY
     #dotRadius
+    #maxDots
+
+    #store
     constructor(canvas, offscreenCanvas, options = {}) {
         this.#canvas = canvas;
         this.#ctx = canvas.getContext("2d");
@@ -57,11 +61,12 @@ class Plane {
         this.#dotRadius = options.dotRadius ?? 10;
         this.#scaleX = (this.#canvasWidth-(2 * this.#padding))/(this.#maxValue*2);
         this.#scaleY = (this.#canvasHeight-(2 * this.#padding))/(this.#maxValue*2);
+        this.#maxDots = options.maxDots;
     }
 
     #clearPlane(ctx) {
         ctx.fillStyle = this.#colors.clearColor;
-        ctx.fillRect(0, 0, this.#canvas.width, this.#canvas.height);
+        ctx.fillRect(0, 0, this.#canvasWidth, this.#canvasHeight);
     }
 
     #drawAxes(ctx) {
@@ -87,7 +92,8 @@ class Plane {
         const n = this.#tickCount;
         const maxValue = this.#maxValue;
 
-        const step = (w - 2 * p) / (n - 1);
+        const stepX = (w - 2 * p) / (n - 1);
+        const stepY = (h - 2 * p) / (n - 1);
 
         // Ticks size (half of the length)
         // TODO: add to plane settings
@@ -103,7 +109,8 @@ class Plane {
         }
 
         for (let i = 0; i < n; i++) {
-            const c = p + step * i;
+            const cx = p + stepX * i;
+            const cy = p + stepY * i;
             const valueW = -maxValue + (2 * maxValue / (n - 1)) * i;
             const valueH = maxValue - (2 * maxValue / (n - 1)) * i;
 
@@ -112,10 +119,10 @@ class Plane {
 
             // Ticks
             ctx.beginPath();
-            ctx.moveTo(c, h / 2 - tickH);
-            ctx.lineTo(c, h / 2 + tickH);
-            ctx.moveTo(w / 2 - tickW, c);
-            ctx.lineTo(w / 2 + tickW, c);
+            ctx.moveTo(cx, h / 2 - tickH);
+            ctx.lineTo(cx, h / 2 + tickH);
+            ctx.moveTo(w / 2 - tickW, cy);
+            ctx.lineTo(w / 2 + tickW, cy);
             ctx.stroke();
 
             // Labels
@@ -124,11 +131,11 @@ class Plane {
             if (Math.abs(i - (n-1)/2) > 1) {
                 ctx.textAlign = "center";
                 ctx.textBaseline = "top";
-                ctx.fillText(valueW.toFixed(1), c, h / 2 + tickH + 4);
+                ctx.fillText(valueW.toFixed(1), cx, h / 2 + tickH + 4);
 
                 ctx.textAlign = "right";
                 ctx.textBaseline = "middle";
-                ctx.fillText(valueH.toFixed(1), w / 2 - tickW - 6, c);
+                ctx.fillText(valueH.toFixed(1), w / 2 - tickW - 6, cy);
             }
         }
     }
@@ -141,7 +148,6 @@ class Plane {
         ctx.fillStyle = this.#colors.funcPlace;
         ctx.fillRect(x, y - r*scaleY, (r/2)*scaleX, r*scaleY);
         ctx.beginPath()
-        //ctx.arc(x, y, r*scaleX, 0, Math.PI/2);
         ctx.ellipse(x, y, r*scaleX, r*scaleY, 0, 0, Math.PI/2);
         ctx.lineTo(x, y)
         ctx.fill();
@@ -154,19 +160,28 @@ class Plane {
         ctx.fill();
     }
 
-    #drawDot(dot) {
+    #drawDot(dot, ctx) {
+        ctx.beginPath();
         const radios = this.#dotRadius;
         const scaleX = this.#scaleX;
         const scaleY = this.#scaleY;
-        this.#ctx.ellipse(dot.x * scaleX, dot.y * scaleY,
-            radios * scaleX, radios * scaleY,
-            0, 0, Math.PI*2, false);
-        this.#ctx.fillStyle = this.#isHit(dot) ? this.#colors.successDot : this.#colors.wrongDot;
-        this.#ctx.fill();
+        ctx.arc(this.#centerX + dot.x * scaleX,
+            this.#centerY - dot.y * scaleY,
+            radios, 0, Math.PI*2, false);
+        ctx.fillStyle = isHit(dot) ? this.#colors.successDot : this.#colors.wrongDot;
+        ctx.fill();
+        ctx.closePath();
     }
 
-    #drawDots() {
-        this.#dots.forEach((dot) => this.#drawDot(dot));
+    #drawDots(ctx) {
+        if (this.#maxDots === null || this.#maxDots === undefined || isNaN(this.#maxDots)) {
+            this.#dots.forEach((dot) => this.#drawDot(dot, ctx));
+            return;
+        }
+        for (let i = 0; i < Math.min(this.#maxDots, this.#dots.length); i++) {
+            const d = this.#dots.at(this.#dots.length - i - 1);
+            this.#drawDot(d, ctx);
+        }
     }
 
     resize() {
@@ -176,7 +191,11 @@ class Plane {
             this.#canvasHeight = rect.height;
             this.#offscreenCanvas.width = this.#canvasWidth;
             this.#offscreenCanvas.height = this.#canvasHeight;
-            this.fullRender();
+            this.#scaleX = (this.#canvasWidth-(2 * this.#padding))/(this.#maxValue*2);
+            this.#scaleY = (this.#canvasHeight-(2 * this.#padding))/(this.#maxValue*2);
+            this.#centerX = this.#canvasWidth / 2;
+            this.#centerY = this.#canvasHeight / 2;
+            this.fullRender(this.#store.getR());
         }
         this.render()
     }
@@ -190,12 +209,22 @@ class Plane {
 
     render(r) {
         this.#ctx.drawImage(this.#offscreenCanvas, 0, 0);
-        this.#drawDots();
-        this.#drawFunc(this.#offscreenCtx, r);
+        this.#drawFunc(this.#ctx, r);
+        this.#drawDots(this.#ctx);
     }
 
     setDots(dots) {
         this.#dots = dots;
+    }
+
+    #subs(snap) {
+        this.#dots = snap.dots;
+        this.render(snap.r);
+    }
+
+    bind(store) {
+        this.#store = store;
+        store.subscribe((snap) => this.#subs(snap))
     }
 
 }

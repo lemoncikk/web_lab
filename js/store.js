@@ -9,19 +9,20 @@ class Store {
         this.r = r;
     }
 
-    setR(r) {
+    #setR(r) {
         this.r = r;
-        this.#emit();
     }
 
     addDot(dot) {
         this.#dots.push(dot);
+        this.#setR(dot.r);
+        window.localStorage.setItem(this.key, JSON.stringify(this.#dots));
         this.#emit()
     }
 
     clear() {
         this.#dots = [];
-        window.localStorage.setItem(this.key, JSON.stringify("[]"));
+        window.localStorage.setItem(this.key, JSON.stringify([]));
         this.#emit()
     }
 
@@ -49,7 +50,7 @@ class Store {
     }
 
     #snapshot() {
-        return {dots: this.#dots, r: this.r}
+        return {dots: [...this.#dots], r: this.r}
     }
 
     subscribe(fn) {
@@ -63,7 +64,7 @@ class Store {
     }
 
     #emit() {
-        for (const fn in this.#subs) {
+        for (const fn of this.#subs) {
             fn(this.#snapshot());
         }
     }
