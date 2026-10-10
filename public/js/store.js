@@ -1,23 +1,38 @@
+import {Dot} from "./dot.js";
+
 export {Store};
 
 class Store {
     #subs = new Set();
     #dots = [];
+    #r
     constructor(key, r) {
         this.key = key;
         this.#dots = JSON.parse(window.localStorage.getItem(key) ?? "[]");
-        this.r = r;
+        this.#r = Number(JSON.parse((window.localStorage.getItem(key + 'r')) ?? 3));
     }
 
-    #setR(r) {
-        this.r = r;
+    setR(r) {
+        this.#r = r
+        this.#save();
+        this.#emit();
+    }
+    change(index, x, y, r, time) {
+        this.#dots[index] = new Dot(x, y, r, time);
+        this.#save();
+        this.#emit();
+    }
+
+    #save() {
+        window.localStorage.setItem(this.key, JSON.stringify(this.#dots));
+        window.localStorage.setItem(this.key + 'r', JSON.stringify(this.#r));
     }
 
     addDot(dot) {
         this.#dots.push(dot);
-        this.#setR(dot.r);
-        window.localStorage.setItem(this.key, JSON.stringify(this.#dots));
-        this.#emit()
+        this.setR(dot.r);
+        this.#save();
+        this.#emit();
     }
 
     clear() {
@@ -42,7 +57,7 @@ class Store {
     }
 
     getR() {
-        return this.r;
+        return this.#r;
     }
 
     isEmpty() {
@@ -50,7 +65,7 @@ class Store {
     }
 
     #snapshot() {
-        return {dots: [...this.#dots], r: this.r}
+        return {dots: [...this.#dots], r: this.#r}
     }
 
     subscribe(fn) {
