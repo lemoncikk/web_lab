@@ -38,7 +38,7 @@ class Table {
     #addDot(dot) {
         const input = this.#prepareInput(dot);
         const tdi = document.createElement("td");
-        tdi.appendChild(input);
+        tdi.append(input);
         const tr = document.createElement("tr");
         const tdx = document.createElement("td");
         tdx.textContent = dot.x;
@@ -48,12 +48,12 @@ class Table {
         tdt.textContent = new Date(dot.time).toLocaleString("ru", this.#dataOptions);
         const tdh = document.createElement("td");
         tdh.textContent = isHit(dot) ? "Попал" : "Не попал";
-        tr.appendChild(tdx);
-        tr.appendChild(tdy);
-        tr.appendChild(tdi);
-        tr.appendChild(tdt);
-        tr.appendChild(tdh);
-        this.#table.appendChild(tr);
+        tr.append(tdx);
+        tr.append(tdy);
+        tr.append(tdi);
+        tr.append(tdt);
+        tr.append(tdh);
+        this.#table.append(tr);
     }
 
     #subs(snap) {
@@ -82,7 +82,7 @@ class Table {
             return;
         }
         let dots = this.#store.getAll();
-        this.#store.setR(Number(inp.value));
+        this.#store.r = (Number(inp.value));
         for (let i = 0; i < dots.length; i++) {
             if (dots[i].time.toString() === id) {
                 this.#store.change(i, dots[i].x, dots[i].y, Number(inp.value), Date.now());

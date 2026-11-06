@@ -9,10 +9,15 @@ class Store {
     constructor(key, r) {
         this.key = key;
         this.#dots = JSON.parse(window.localStorage.getItem(key) ?? "[]");
-        this.#r = Number(JSON.parse((window.localStorage.getItem(key + 'r')) ?? 3));
+        if (r == null) {
+            this.#r = Number(JSON.parse((window.localStorage.getItem(key + 'r')) ?? 3));
+            return
+        }
+        this.#r = Number(r);
+        this.#r = r;
     }
 
-    setR(r) {
+    set r(r) {
         this.#r = r
         this.#save();
         this.#emit();
@@ -30,7 +35,7 @@ class Store {
 
     addDot(dot) {
         this.#dots.push(dot);
-        this.setR(dot.r);
+        this.r = (dot.r);
         this.#save();
         this.#emit();
     }
@@ -56,7 +61,7 @@ class Store {
         return this.#dots;
     }
 
-    getR() {
+    get r() {
         return this.#r;
     }
 

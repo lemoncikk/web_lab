@@ -30,14 +30,14 @@ const options = {
 };
 const plane = new Plane(canvas, offscreenCanvas, options)
 window.addEventListener("resize", () => plane.resize());
-plane.fullRender(store.getR());
+plane.fullRender(store.r);
 
 resetBtn.addEventListener("click", () => {
     store.clear();
     form.reset();
 });
 
-form.addEventListener("submit", (ev) => {
+form.addEventListener("submit", () => {
     const data = new FormData(form);
     const valid = validate(form, "x-cord", 'y-cord', 'r-group');
     if (!valid) return;
