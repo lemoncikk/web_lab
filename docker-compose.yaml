@@ -2,7 +2,14 @@ version: "3.8"
 
 services:
   web:
-    build: .
+    build: ./front
     ports:
       - "8080:80"
+    restart: unless-stopped
+    depends_on:
+      - java-fcgi
+  java-fcgi:
+    build:
+      context: ./back
+      dockerfile: Dockerfile
     restart: unless-stopped
