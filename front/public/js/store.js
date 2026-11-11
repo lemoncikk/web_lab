@@ -8,13 +8,9 @@ class Store {
     #r
     constructor(key, r) {
         this.key = key;
-        this.#dots = JSON.parse(window.localStorage.getItem(key) ?? "[]");
-        if (r == null) {
-            this.#r = Number(JSON.parse((window.localStorage.getItem(key + 'r')) ?? 3));
-            return
-        }
-        this.#r = Number(r);
-        this.#r = r;
+        this.#dots = JSON.parse(window.localStorage.getItem(key) ?? "[]")
+            .filter(d => d.id && typeof d.hit === "boolean");   // отбросить точки старого формата
+        this.#r = Number(r ?? JSON.parse(window.localStorage.getItem(key + "r") ?? "3"));
     }
 
     set r(r) {
@@ -22,8 +18,9 @@ class Store {
         this.#save();
         this.#emit();
     }
-    change(index, x, y, r, time) {
-        this.#dots[index] = new Dot(x, y, r, time);
+    change(index, x, y, r, time, hit) {
+        this.#dots[index] = new Dot(x, y, r, time, hit, this.#dots[index].id);   // id сохраняется
+        this.#r = r;
         this.#save();
         this.#emit();
     }
@@ -35,7 +32,7 @@ class Store {
 
     addDot(dot) {
         this.#dots.push(dot);
-        this.r = (dot.r);
+        this.#r = dot.r;
         this.#save();
         this.#emit();
     }

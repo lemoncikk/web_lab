@@ -1,5 +1,3 @@
-import {isHit} from "./dot.js";
-
 export {Plane};
 
 class Plane {
@@ -168,7 +166,7 @@ class Plane {
         ctx.arc(this.#centerX + dot.x * scaleX,
             this.#centerY - dot.y * scaleY,
             radios, 0, Math.PI*2, false);
-        ctx.fillStyle = isHit(dot) ? this.#colors.successDot : this.#colors.wrongDot;
+        ctx.fillStyle = dot.hit ? this.#colors.successDot : this.#colors.wrongDot;
         ctx.fill();
         ctx.closePath();
     }
@@ -191,13 +189,14 @@ class Plane {
             this.#canvasHeight = rect.height;
             this.#offscreenCanvas.width = this.#canvasWidth;
             this.#offscreenCanvas.height = this.#canvasHeight;
-            this.#scaleX = (this.#canvasWidth-(2 * this.#padding))/(this.#maxValue*2);
-            this.#scaleY = (this.#canvasHeight-(2 * this.#padding))/(this.#maxValue*2);
+            this.#scaleX = (this.#canvasWidth - 2 * this.#padding) / (this.#maxValue * 2);
+            this.#scaleY = (this.#canvasHeight - 2 * this.#padding) / (this.#maxValue * 2);
             this.#centerX = this.#canvasWidth / 2;
             this.#centerY = this.#canvasHeight / 2;
-            this.fullRender(this.#store.getR());
+            this.fullRender(this.#store.r);
+        } else {
+            this.render(this.#store.r);
         }
-        this.render()
     }
 
     fullRender(r) {

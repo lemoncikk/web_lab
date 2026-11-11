@@ -3,6 +3,7 @@ import {Store} from "./store.js";
 import {Dot} from "./dot.js";
 import {Table} from "./table.js";
 import {validate, validateY} from "./validation.js";
+import {checkHit} from "./api.js";
 
 const canvas = document.getElementById("plane");
 const resetBtn = document.getElementById("reset-btn");
@@ -12,6 +13,8 @@ const yCord = document.getElementById("y");
 const tBody = document.getElementById("t-body");
 const store = new Store("dots", 3);
 const table = new Table(tBody);
+const submitBtn = document.getElementById("submit-form-btn");
+const errorBox = document.getElementById("error");
 
 const options = {
     padding: 20,
@@ -37,15 +40,24 @@ resetBtn.addEventListener("click", () => {
     form.reset();
 });
 
-form.addEventListener("submit", () => {
-    const data = new FormData(form);
-    const valid = validate(form, "x-cord", 'y-cord', 'r-group');
-    if (!valid) return;
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!validate(form, "x-cord", "y-cord", "r-group")) return;
 
-    store.addDot(new Dot(Number(data.get("x-cord")),
-        Number(data.get("y-cord")),
-        Number(data.get("r-group")),
-        Date.now()));
+    const data = new FormData(form);
+    const [x, y, r] = ["x-cord", "y-cord", "r-group"].map(n => data.get(n));
+
+    submitBtn.disabled = true;
+    errorBox.textContent = "";
+    try {
+        const hit = await checkHit(x, y, r);
+        store.addDot(new Dot(Number(x), Number(y), Number(r), Date.now(), hit));
+    } catch (err) {
+        errorBox.textContent = err.message;
+        console.error(err);
+    } finally {
+        submitBtn.disabled = false;
+    }
 });
 yCord.addEventListener("input", () => {
     const data = new FormData(form);
